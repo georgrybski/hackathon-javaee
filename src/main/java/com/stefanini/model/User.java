@@ -4,7 +4,6 @@ import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.utils.PasswordUtils;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -36,21 +35,19 @@ public class User {
     @Column(name = "EMAIL",nullable = false, unique = true)
     private String email;
 
-    @NotEmpty
     @Column(name = "DATA_DE_NASCIMENTO", nullable = false)
     private LocalDate birthDate;
 
-    @NotEmpty
     @Column(name = "DATA_DE_CRIACAO", nullable = false, updatable = false)
     private LocalDateTime creationTime;
 
     @UpdateTimestamp
     @Column(name = "DATA_DE_ATUALIZACAO")
     private LocalDateTime updateTime;
-    @NotEmpty
+
     @Column(name = "SALT", nullable = false)
     private String salt;
-    @NotEmpty
+
     @Column(name = "SENHA", nullable = false)
     private String password;
 

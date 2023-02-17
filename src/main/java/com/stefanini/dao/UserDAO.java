@@ -1,6 +1,7 @@
 package com.stefanini.dao;
 
 import com.stefanini.dto.UserCreationDTO;
+import com.stefanini.dto.UserRetrievalDTO;
 import com.stefanini.model.User;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,9 +28,13 @@ public class UserDAO extends GenericDAO<User, Long> {
     }
 
     public User findUserById(Long id) {
-        return createQuery("SELECT u FROM User u WHERE u.id = :id")
-                .setParameter("id", id)
-                .getSingleResult();
+        User user;
+        try {
+            user = findById(id);
+        } catch (Exception e) {
+            user = null;
+        }
+        return user;
     }
 
     public User findUserByEmail(String email) {
@@ -38,10 +43,10 @@ public class UserDAO extends GenericDAO<User, Long> {
                 .getSingleResult();
     }
 
-    public boolean createUser(UserCreationDTO userCreationDTO) {
+    public boolean deleteUser(Long id) {
         boolean success;
         try {
-            save(new User(userCreationDTO));
+            delete(id);
             success = true;
         } catch (Exception e) {
             success = false;
@@ -49,10 +54,10 @@ public class UserDAO extends GenericDAO<User, Long> {
         return success;
     }
 
-    public boolean deleteUser(Long id) {
+    public boolean createUser(UserCreationDTO userCreationDTO) {
         boolean success;
         try {
-            delete(id);
+            save(new User(userCreationDTO));
             success = true;
         } catch (Exception e) {
             success = false;

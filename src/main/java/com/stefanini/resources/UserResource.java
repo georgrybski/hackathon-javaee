@@ -15,36 +15,33 @@ public class UserResource {
     @Inject
     private UserService userService;
     @GET
-    @Path("/users-whose-name-starts-with/{letter}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersByNameStartingWith(@PathParam("letter") String letter) {
+    public Response getUsersByNameStartingWith(@QueryParam("firstLetter") String letter) {
         List<UserRetrievalDTO> users = userService.findUserByNameStartingWith(letter);
-        return users.isEmpty() ? Response.status(Response.Status.NOT_FOUND).build() : Response.status(Response.Status.OK).entity(users).build();
+        return Response.status(Response.Status.OK).entity(users).build();
     }
     @GET
-    @Path("/users-whose-birth-month-is/{month}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersByBirthMonth(@PathParam("month") Integer month) {
+    public Response getUsersByBirthMonth(@QueryParam("month") Integer month) {
         List<UserRetrievalDTO> users = userService.findUsersByBirthMonth(month);
-        return users.isEmpty() ? Response.status(Response.Status.NOT_FOUND).build() : Response.status(Response.Status.OK).entity(users).build();
+        return Response.status(Response.Status.OK).entity(users).build();
     }
     @GET
     @Path("/email-providers")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEmailProviders() {
         List<String> emailProviders = userService.getEmailProviders();
-        return emailProviders.isEmpty() ? Response.status(Response.Status.NOT_FOUND).build() : Response.status(Response.Status.OK).entity(emailProviders).build();
+        return Response.status(Response.Status.OK).entity(emailProviders).build();
     }
     @GET
-    @Path("/all-users")
     @Produces(MediaType.APPLICATION_JSON)
     public Response listUsers() {
         List<UserRetrievalDTO> users = userService.listUsers();
-        return users.isEmpty() ? Response.status(Response.Status.NOT_FOUND).build() : Response.status(Response.Status.OK).entity(users).build();
+        return Response.status(Response.Status.OK).entity(users).build();
     }
 
     @GET
-    @Path("/user-id/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("id") Long id) {
         UserRetrievalDTO user = userService.findUserById(id);
@@ -52,14 +49,20 @@ public class UserResource {
     }
 
     @GET
-    @Path("/user-dto-example")
+    @Path("/dto-example")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getExampleDTO() {
         return Response.status(Response.Status.OK).entity(UserCreationDTO.userCreationDTOExample).build();
     }
 
+    @GET
+    @Path("/dto-example2")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getExampleDTO2() {
+        return Response.status(Response.Status.OK).entity(UserCreationDTO.userCreationDTOExample2).build();
+    }
+
     @POST
-    @Path("/create-user")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(UserCreationDTO userCreationDTO) {
@@ -73,14 +76,14 @@ public class UserResource {
     }
 
     @DELETE
-    @Path("/delete-user/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("id") Long id) {
         Response response;
         if (userService.deleteUser(id)) {
             response = Response.status(Response.Status.OK).build();
         } else {
-            response = Response.status(Response.Status.NOT_FOUND).build();
+            response = Response.status(Response.Status.NO_CONTENT).build();
         }
         return response;
     }

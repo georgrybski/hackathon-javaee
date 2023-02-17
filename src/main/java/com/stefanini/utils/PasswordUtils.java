@@ -7,8 +7,7 @@ import java.security.SecureRandom;
 public final class PasswordUtils {
 
     private PasswordUtils() {}
-
-    public static String generateSalt() {
+     public static String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);

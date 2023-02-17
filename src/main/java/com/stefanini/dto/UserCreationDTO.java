@@ -17,6 +17,8 @@ public class UserCreationDTO {
 
     public static UserCreationDTO userCreationDTOExample = new UserCreationDTO(
             "João da Silva", "joao", "Senha12@!", "joao@gmail.com", LocalDate.of(1990, 1, 1));
+    public static UserCreationDTO userCreationDTOExample2 = new UserCreationDTO(
+            "João da Silva", "joao", "Senha12@!", "joao@gmail.com", null);
 
     @NotEmpty
     @Size(max = 50)

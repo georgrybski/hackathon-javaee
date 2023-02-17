@@ -7,7 +7,6 @@ import com.stefanini.model.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,8 @@ public class UserService {
     }
 
     public UserRetrievalDTO findUserById(Long id) {
-        return new UserRetrievalDTO(userDAO.findUserById(id));
+        User user = userDAO.findUserById(id);
+        return user != null? new UserRetrievalDTO(userDAO.findUserById(id)) : null;
     }
 
 
@@ -48,10 +48,7 @@ public class UserService {
         return userDAO.createUser(userCreationDTO);
     }
 
-
     public boolean deleteUser(Long id) {
         return userDAO.deleteUser(id);
     }
-
-
 }
