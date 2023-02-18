@@ -79,7 +79,7 @@ public class UserResource {
         if (userService.updateUser(id, userCreationDTO)) {
             response = Response.status(Response.Status.CREATED).build();
         } else {
-            response = Response.status(Response.Status.CONFLICT).build();
+            response = Response.status(Response.Status.BAD_REQUEST).build();
         }
         return response;
     }
@@ -93,7 +93,7 @@ public class UserResource {
         if (userService.patchUser(id, patchData)) {
             response = Response.status(Response.Status.CREATED).build();
         } else {
-            response = Response.status(Response.Status.CONFLICT).build();
+            response = Response.status(Response.Status.BAD_REQUEST).build();
         }
         return response;
     }
