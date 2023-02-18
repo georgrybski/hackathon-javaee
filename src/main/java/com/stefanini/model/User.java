@@ -62,19 +62,4 @@ public class User {
     }
 
     public User() {}
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", birthDate=" + birthDate +
-                ", creationTime=" + creationTime +
-                ", updateTime=" + updateTime +
-                ", salt='" + salt + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }
