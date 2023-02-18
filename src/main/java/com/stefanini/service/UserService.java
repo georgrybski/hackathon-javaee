@@ -44,7 +44,6 @@ public class UserService {
         return user != null? new UserRetrievalDTO(userDAO.findUserById(id)) : null;
     }
 
-
     public boolean createUser(UserCreationDTO userCreationDTO) {
         return userDAO.createUser(userCreationDTO);
     }

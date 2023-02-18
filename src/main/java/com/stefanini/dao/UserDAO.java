@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class UserDAO extends GenericDAO<User, Long> {
                         user.setBirthDate(LocalDate.parse((String) value));
                         break;
                     default:
-                        throw new RuntimeException();
+                        throw new InvalidParameterException();
                 }
             });
             em.merge(user);

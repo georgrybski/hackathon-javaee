@@ -43,7 +43,6 @@ public class UserCreationDTO {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthDate;
 
-
     public UserCreationDTO(String name, String login, String password, String email, LocalDate birthDate) {
         this.name = name;
         this.login = login;
