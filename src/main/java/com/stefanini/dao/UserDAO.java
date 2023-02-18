@@ -104,11 +104,7 @@ public class UserDAO extends GenericDAO<User, Long> {
                         user.setEmail((String) value);
                         break;
                     case "birthDate":
-                        ArrayList dateArray = (ArrayList) value;
-                        int year = (int) dateArray.get(0);
-                        int month = (int) dateArray.get(1);
-                        int day = (int) dateArray.get(2);
-                        user.setBirthDate(LocalDate.of(year, month, day));
+                        user.setBirthDate(LocalDate.parse((String) value));
                         break;
                     default:
                         throw new RuntimeException();
