@@ -16,9 +16,7 @@ import java.time.LocalDate;
 public class UserCreationDTO {
 
     public static UserCreationDTO userCreationDTOExample = new UserCreationDTO(
-            "João da Silva", "joao", "Senha12@!", "joao@gmail.com", LocalDate.of(1990, 1, 1));
-    public static UserCreationDTO userCreationDTOExample2 = new UserCreationDTO(
-            "João da Silva", "joao", "Senha12@!", "joao@gmail.com", null);
+            "John Doe", "johndoe31", "Password2@", "john.doe@gmail.com", LocalDate.of(1985, 10, 31));
 
     @NotEmpty
     @Size(max = 50)
@@ -41,7 +39,6 @@ public class UserCreationDTO {
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    @NotEmpty
     private LocalDate birthDate;
 
     public UserCreationDTO(String name, String login, String password, String email, LocalDate birthDate) {

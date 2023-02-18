@@ -5,10 +5,12 @@ import com.stefanini.dto.UserRetrievalDTO;
 import com.stefanini.service.UserService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Map;
 
 @Path("/users")
 public class UserResource {
@@ -16,26 +18,26 @@ public class UserResource {
     private UserService userService;
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersByNameStartingWith(@QueryParam("firstLetter") String letter) {
+    public Response getListOfUsersThatStartWithLetter(@QueryParam("firstLetter") String letter) {
         List<UserRetrievalDTO> users = userService.findUserByNameStartingWith(letter);
         return Response.status(Response.Status.OK).entity(users).build();
     }
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersByBirthMonth(@QueryParam("month") Integer month) {
+    public Response getListOfUsersBornInMonth(@QueryParam("month") Integer month) {
         List<UserRetrievalDTO> users = userService.findUsersByBirthMonth(month);
         return Response.status(Response.Status.OK).entity(users).build();
     }
     @GET
     @Path("/email-providers")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmailProviders() {
+    public Response getEmailProviderList() {
         List<String> emailProviders = userService.getEmailProviders();
         return Response.status(Response.Status.OK).entity(emailProviders).build();
     }
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listUsers() {
+    public Response getUsersList() {
         List<UserRetrievalDTO> users = userService.listUsers();
         return Response.status(Response.Status.OK).entity(users).build();
     }
@@ -55,19 +57,40 @@ public class UserResource {
         return Response.status(Response.Status.OK).entity(UserCreationDTO.userCreationDTOExample).build();
     }
 
-    @GET
-    @Path("/dto-example2")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getExampleDTO2() {
-        return Response.status(Response.Status.OK).entity(UserCreationDTO.userCreationDTOExample2).build();
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(UserCreationDTO userCreationDTO) {
+    public Response createUser(@Valid UserCreationDTO userCreationDTO) {
         Response response;
         if (userService.createUser(userCreationDTO)) {
+            response = Response.status(Response.Status.CREATED).build();
+        } else {
+            response = Response.status(Response.Status.CONFLICT).build();
+        }
+        return response;
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@PathParam("id") Long id, UserCreationDTO userCreationDTO) {
+        Response response;
+        if (userService.updateUser(id, userCreationDTO)) {
+            response = Response.status(Response.Status.CREATED).build();
+        } else {
+            response = Response.status(Response.Status.CONFLICT).build();
+        }
+        return response;
+    }
+
+    @PATCH
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response patchUser(@PathParam("id") Long id, Map<String, Object> patchData) {
+        Response response;
+        if (userService.patchUser(id, patchData)) {
             response = Response.status(Response.Status.CREATED).build();
         } else {
             response = Response.status(Response.Status.CONFLICT).build();
