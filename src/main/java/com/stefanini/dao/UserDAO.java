@@ -3,16 +3,19 @@ package com.stefanini.dao;
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.model.User;
 import com.stefanini.utils.PasswordUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
 public class UserDAO extends GenericDAO<User, Long> {
+
+    Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
     public List<User> findUsersByBirthMonth(Integer requestedMonth) {
         int month = (requestedMonth == null) ? LocalDate.now().getMonthValue() : requestedMonth;
@@ -35,6 +38,7 @@ public class UserDAO extends GenericDAO<User, Long> {
         try {
             user = findById(id);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             user = null;
         }
         return user;
@@ -52,6 +56,7 @@ public class UserDAO extends GenericDAO<User, Long> {
             delete(id);
             success = true;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             success = false;
         }
         return success;
@@ -63,6 +68,7 @@ public class UserDAO extends GenericDAO<User, Long> {
             save(new User(userCreationDTO));
             success = true;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             success = false;
         }
         return success;
@@ -77,11 +83,11 @@ public class UserDAO extends GenericDAO<User, Long> {
             update(user);
             success = true;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             success = false;
         }
         return success;
     }
-
 
     @Transactional
     public boolean patchUser(Long id, Map<String, Object> patchData) {
@@ -113,6 +119,7 @@ public class UserDAO extends GenericDAO<User, Long> {
             em.merge(user);
             success = true;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             success = false;
         }
         return success;
