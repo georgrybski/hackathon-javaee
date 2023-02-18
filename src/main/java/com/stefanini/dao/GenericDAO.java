@@ -1,7 +1,5 @@
 package com.stefanini.dao;
 
-import org.hibernate.exception.ConstraintViolationException;
-
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,9 +27,9 @@ public class GenericDAO<T, I>  {
         return em.find(clazz, id);
     }
 
-    public <T> List<T> listAll(){
+    public List<T> listAll(){
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<T> query = (CriteriaQuery<T>) builder.createQuery(clazz);
+        CriteriaQuery<T> query = builder.createQuery(clazz);
         query.from(clazz);
         return em.createQuery(query).getResultList();
     }
@@ -47,8 +45,8 @@ public class GenericDAO<T, I>  {
         em.remove(t);
     }
 
-    public <T> TypedQuery<T> createQuery(String query) {
-        return (TypedQuery<T>) em.createQuery(query, clazz);
+    public TypedQuery<T> createQuery(String query) {
+        return em.createQuery(query, clazz);
     }
 
     public Query createNativeQuery(String query) {
