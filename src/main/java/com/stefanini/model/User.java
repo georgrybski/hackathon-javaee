@@ -2,9 +2,9 @@ package com.stefanini.model;
 
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.utils.PasswordUtils;
+
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -62,4 +62,19 @@ public class User {
     }
 
     public User() {}
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", login='" + login + '\'' +
+                ", email='" + email + '\'' +
+                ", birthDate=" + birthDate +
+                ", creationTime=" + creationTime +
+                ", updateTime=" + updateTime +
+                ", salt='" + salt + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

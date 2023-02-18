@@ -8,6 +8,7 @@ import com.stefanini.model.User;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -50,5 +51,13 @@ public class UserService {
 
     public boolean deleteUser(Long id) {
         return userDAO.deleteUser(id);
+    }
+
+    public boolean patchUser(Long id, Map<String, Object> patchData) {
+        return userDAO.patchUser(id, patchData);
+    }
+
+    public boolean updateUser(Long id, UserCreationDTO userCreationDTO) {
+        return userDAO.updateUser(id, userCreationDTO);
     }
 }

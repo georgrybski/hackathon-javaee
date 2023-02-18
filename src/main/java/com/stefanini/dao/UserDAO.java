@@ -1,12 +1,15 @@
 package com.stefanini.dao;
 
 import com.stefanini.dto.UserCreationDTO;
-import com.stefanini.dto.UserRetrievalDTO;
 import com.stefanini.model.User;
+import com.stefanini.utils.PasswordUtils;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class UserDAO extends GenericDAO<User, Long> {
@@ -58,6 +61,60 @@ public class UserDAO extends GenericDAO<User, Long> {
         boolean success;
         try {
             save(new User(userCreationDTO));
+            success = true;
+        } catch (Exception e) {
+            success = false;
+        }
+        return success;
+    }
+
+    @Transactional
+    public boolean updateUser(Long id, UserCreationDTO userCreationDTO) {
+        boolean success;
+        User user = new User(userCreationDTO);
+        user.setId(id);
+        try {
+            update(user);
+            success = true;
+        } catch (Exception e) {
+            success = false;
+        }
+        return success;
+    }
+
+
+    @Transactional
+    public boolean patchUser(Long id, Map<String, Object> patchData) {
+        boolean success;
+        try {
+            User user = findById(id);
+            patchData.forEach((key, value) -> {
+                switch (key) {
+                    case "name":
+                        user.setName((String) value);
+                        break;
+                    case "login":
+                        user.setLogin((String) value);
+                        break;
+                    case "password":
+                        user.setSalt(PasswordUtils.generateSalt());
+                        user.setPassword(PasswordUtils.hashPassword((String) value, user.getSalt()));
+                        break;
+                    case "email":
+                        user.setEmail((String) value);
+                        break;
+                    case "birthDate":
+                        ArrayList dateArray = (ArrayList) value;
+                        int year = (int) dateArray.get(0);
+                        int month = (int) dateArray.get(1);
+                        int day = (int) dateArray.get(2);
+                        user.setBirthDate(LocalDate.of(year, month, day));
+                        break;
+                    default:
+                        throw new RuntimeException();
+                }
+            });
+            em.merge(user);
             success = true;
         } catch (Exception e) {
             success = false;
