@@ -47,7 +47,13 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("id") Long id) {
         UserRetrievalDTO user = userService.findUserById(id);
-        return user != null? Response.status(Response.Status.OK).entity(userService.findUserById(id)).build() : Response.status(Response.Status.NOT_FOUND).build();
+        Response response;
+        if (user != null) {
+            response = Response.status(Response.Status.OK).entity(user).build();
+        } else {
+            response = Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return response;
     }
 
     @GET
@@ -77,7 +83,7 @@ public class UserResource {
     public Response updateUser(@PathParam("id") Long id, UserCreationDTO userCreationDTO) {
         Response response;
         if (userService.updateUser(id, userCreationDTO)) {
-            response = Response.status(Response.Status.CREATED).build();
+            response = Response.status(Response.Status.OK).build();
         } else {
             response = Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -91,7 +97,7 @@ public class UserResource {
     public Response patchUser(@PathParam("id") Long id, Map<String, Object> patchData) {
         Response response;
         if (userService.patchUser(id, patchData)) {
-            response = Response.status(Response.Status.CREATED).build();
+            response = Response.status(Response.Status.OK).build();
         } else {
             response = Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -104,9 +110,9 @@ public class UserResource {
     public Response deleteUser(@PathParam("id") Long id) {
         Response response;
         if (userService.deleteUser(id)) {
-            response = Response.status(Response.Status.OK).build();
-        } else {
             response = Response.status(Response.Status.NO_CONTENT).build();
+        } else {
+            response = Response.status(Response.Status.NOT_FOUND).build();
         }
         return response;
     }
