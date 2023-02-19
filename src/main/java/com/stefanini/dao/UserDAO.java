@@ -12,6 +12,7 @@ import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @ApplicationScoped
 public class UserDAO extends GenericDAO<User, Long> {
@@ -34,13 +35,13 @@ public class UserDAO extends GenericDAO<User, Long> {
         return em.createQuery("SELECT DISTINCT SUBSTRING(email, LOCATE('@', email) + 1) AS email_provider FROM User", String.class).getResultList();
     }
 
-    public User findUserById(Long id) {
-        User user;
+    public Optional<User> findUserById(Long id) {
+        Optional<User> user;
         try {
-            user = findById(id);
+            user = Optional.of(findById(id));
         } catch (Exception e) {
             logger.error(e.getMessage());
-            user = null;
+            user = Optional.empty();
         }
         return user;
     }

@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -39,9 +40,8 @@ public class UserService {
         return userDAO.findAllEmailProviders();
     }
 
-    public UserRetrievalDTO findUserById(Long id) {
-        User user = userDAO.findUserById(id);
-        return user != null? new UserRetrievalDTO(userDAO.findUserById(id)) : null;
+    public Optional<UserRetrievalDTO> findUserById(Long id) {
+        return userDAO.findUserById(id).map(UserRetrievalDTO::new);
     }
 
     public boolean createUser(UserCreationDTO userCreationDTO) {

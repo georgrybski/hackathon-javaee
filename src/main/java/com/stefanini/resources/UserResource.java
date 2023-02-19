@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Path("/users")
 public class UserResource {
@@ -46,10 +47,10 @@ public class UserResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("id") Long id) {
-        UserRetrievalDTO user = userService.findUserById(id);
+        Optional<UserRetrievalDTO> user = userService.findUserById(id);
         Response response;
-        if (user != null) {
-            response = Response.status(Response.Status.OK).entity(user).build();
+        if (user.isPresent()) {
+            response = Response.status(Response.Status.OK).entity(user.get()).build();
         } else {
             response = Response.status(Response.Status.NOT_FOUND).build();
         }
