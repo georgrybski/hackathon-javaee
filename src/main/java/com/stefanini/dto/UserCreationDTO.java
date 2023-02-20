@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class UserCreationDTO {
 
     public static UserCreationDTO userCreationDTOExample = new UserCreationDTO(
-            "John Doe", "johndoe31", "Password2@", "john.doe@gmail.com", LocalDate.of(1985, 10, 31));
+            "Example Name", "example1", "Password2@", "user@example.com", LocalDate.of(1985, 10, 31));
 
     @NotEmpty
     @Size(max = 50)
