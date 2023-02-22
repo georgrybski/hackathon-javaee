@@ -1,4 +1,4 @@
-package com.stefanini.utils;
+package com.stefanini.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -28,10 +28,5 @@ public final class PasswordUtils {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Failed to hash password", e);
         }
-    }
-
-     public static boolean validatePassword(String password, String salt, String hashedPassword) {
-        String hash = hashPassword(password, salt);
-        return hash.equals(hashedPassword);
     }
 }

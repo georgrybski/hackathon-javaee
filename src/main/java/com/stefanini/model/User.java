@@ -1,7 +1,7 @@
 package com.stefanini.model;
 
 import com.stefanini.dto.UserCreationDTO;
-import com.stefanini.utils.PasswordUtils;
+import com.stefanini.security.PasswordUtils;
 
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,20 +16,20 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     private Long id;
 
-    @NotEmpty
+    @NotBlank
     @Size(max = 50)
     @Column(name = "NOME", nullable = false)
     private String name;
 
-    @NotEmpty
+    @NotBlank
     @Size(min = 5, max = 20)
-    @Column(name = "LOGIN", unique = true)
+    @Column(name = "LOGIN", nullable = false, unique = true)
     private String login;
 
-    @NotEmpty
+    @NotBlank
     @Size(min = 10)
     @Email(message = "Formato inválido")
     @Column(name = "EMAIL",nullable = false, unique = true)
@@ -45,9 +45,11 @@ public class User {
     @Column(name = "DATA_DE_ATUALIZACAO")
     private LocalDateTime updateTime;
 
+    @NotBlank
     @Column(name = "SALT", nullable = false)
     private String salt;
 
+    @NotBlank
     @Column(name = "SENHA", nullable = false)
     private String password;
 

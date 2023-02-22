@@ -7,10 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Data;
 import javax.persistence.Column;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
@@ -19,21 +16,21 @@ public class UserCreationDTO {
     public static UserCreationDTO userCreationDTOExample = new UserCreationDTO(
             "Example Name", "example1", "Password2@", "user@example.com", LocalDate.of(1985, 10, 31));
 
-    @NotEmpty
+    @NotBlank
     @Size(max = 50)
     private String name;
 
-    @NotEmpty
+    @NotBlank
     @Size(min = 5, max = 20)
     private String login;
 
-    @NotEmpty
+    @NotBlank
     @Column(name = "SENHA")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{4,10}$",
             message = "Senha deve conter de 4 a 10 caracteres, 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial")
     private String password;
 
-    @NotEmpty
+    @NotBlank
     @Size(min = 10)
     @Email(message = "Formato inválido")
     private String email;

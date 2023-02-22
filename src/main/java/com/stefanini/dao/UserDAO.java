@@ -2,7 +2,7 @@ package com.stefanini.dao;
 
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.model.User;
-import com.stefanini.utils.PasswordUtils;
+import com.stefanini.security.PasswordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,9 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @ApplicationScoped
 public class UserDAO extends GenericDAO<User, Long> {
@@ -35,95 +33,71 @@ public class UserDAO extends GenericDAO<User, Long> {
         return em.createQuery("SELECT DISTINCT SUBSTRING(email, LOCATE('@', email) + 1) AS email_provider FROM User", String.class).getResultList();
     }
 
-    public Optional<User> findUserById(Long id) {
-        Optional<User> user;
-        try {
-            user = Optional.of(findById(id));
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            user = Optional.empty();
-        }
-        return user;
+    public LinkedHashMap<String, Long> findEmailProvidersWithCount() {
+        return em.createQuery("SELECT SUBSTRING(email, LOCATE('@', email) + 1) AS email_provider, COUNT(*) AS incidences FROM User GROUP BY email_provider ORDER BY incidences DESC", Object[].class)
+                .getResultStream().collect(LinkedHashMap::new, (map, obj) -> map.put((String) obj[0], (Long) obj[1]), LinkedHashMap::putAll);
     }
 
-    public User findUserByEmail(String email) {
+    public Optional<User> findUserById(Long id) {
+        return Optional.ofNullable(findById(id));
+    }
+
+    public Optional<User> findUserByEmail(String email) {
         return createQuery("SELECT u FROM User u WHERE u.email = :email")
                 .setParameter("email", email)
-                .getSingleResult();
+                .getResultList().stream().findFirst();
     }
 
-    public boolean deleteUser(Long id) {
-        boolean success;
-        try {
-            delete(id);
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            success = false;
-        }
-        return success;
+    @Transactional
+    public boolean deleteUser(User user) {
+        delete(user.getId());
+        return true;
     }
 
     public boolean createUser(UserCreationDTO userCreationDTO) {
-        boolean success;
-        try {
-            save(new User(userCreationDTO));
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            success = false;
-        }
-        return success;
+        save(new User(userCreationDTO));
+        return true;
     }
 
     @Transactional
     public boolean updateUser(Long id, UserCreationDTO userCreationDTO) {
-        boolean success;
         User user = new User(userCreationDTO);
         user.setId(id);
-        try {
-            update(user);
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            success = false;
-        }
-        return success;
+        update(user);
+        return true;
     }
 
     @Transactional
-    public boolean patchUser(Long id, Map<String, Object> patchData) {
-        boolean success;
-        try {
-            User user = findById(id);
-            patchData.forEach((key, value) -> {
-                switch (key) {
-                    case "name":
-                        user.setName((String) value);
-                        break;
-                    case "login":
-                        user.setLogin((String) value);
-                        break;
-                    case "password":
-                        user.setSalt(PasswordUtils.generateSalt());
-                        user.setPassword(PasswordUtils.hashPassword((String) value, user.getSalt()));
-                        break;
-                    case "email":
-                        user.setEmail((String) value);
-                        break;
-                    case "birthDate":
-                        user.setBirthDate(LocalDate.parse((String) value));
-                        break;
-                    default:
-                        throw new InvalidParameterException();
-                }
-            });
-            em.merge(user);
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            success = false;
-        }
-        return success;
+    public boolean patchUser(User user, Map<String, Object> patchData) {
+        patchData.forEach((key, value) -> {
+            switch (key) {
+                case "name":
+                    user.setName((String) value);
+                    break;
+                case "login":
+                    user.setLogin((String) value);
+                    break;
+                case "password":
+                    user.setSalt(PasswordUtils.generateSalt());
+                    user.setPassword(PasswordUtils.hashPassword((String) value, user.getSalt()));
+                    break;
+                case "email":
+                    user.setEmail((String) value);
+                    break;
+                case "birthDate":
+                    user.setBirthDate(LocalDate.parse((String) value));
+                    break;
+                default:
+                    throw new InvalidParameterException("Invalid parameter: " + key);
+            }
+        });
+        em.merge(user);
+        return true;
+    }
+
+    public Optional<User> findUserByLogin(String login) {
+        return createQuery("SELECT u FROM User u WHERE u.login = :login")
+                .setParameter("login", login)
+                .getResultList().stream().findFirst();
     }
 }
