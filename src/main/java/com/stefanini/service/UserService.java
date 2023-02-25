@@ -71,7 +71,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new UserNotFoundException("User with id '" + id + "' does not exist.");
+            throw UserNotFoundException.idNotFound(id);
         }
     }
 
@@ -80,7 +80,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new UserNotFoundException("User with email '" + email + "' does not exist.");
+            throw UserNotFoundException.emailNotFound(email);
         }
     }
 
@@ -89,7 +89,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new UserNotFoundException("User with login '" + login + "' does not exist.");
+            throw UserNotFoundException.loginNotFound(login);
         }
     }
 

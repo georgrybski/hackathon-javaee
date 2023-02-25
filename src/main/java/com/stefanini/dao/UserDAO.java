@@ -3,8 +3,6 @@ package com.stefanini.dao;
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.model.User;
 import com.stefanini.security.PasswordUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Query;
