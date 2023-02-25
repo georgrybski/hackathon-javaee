@@ -38,14 +38,7 @@ public class UserDAO extends GenericDAO<User, Long> {
     }
 
     public Optional<User> findUserById(Long id) {
-        Optional<User> user;
-        try {
-            user = Optional.of(findById(id));
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            user = Optional.empty();
-        }
-        return user;
+        return Optional.ofNullable(findById(id));
     }
 
     public Optional<User> findUserByEmail(String email) {
