@@ -3,6 +3,7 @@ package com.stefanini.service;
 import com.stefanini.dao.UserDAO;
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.dto.UserRetrievalDTO;
+import com.stefanini.exception.UserNotFoundException;
 import com.stefanini.model.User;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -55,7 +56,16 @@ public class UserService {
     }
 
     public boolean deleteUser(Long id) {
-        return userDAO.deleteUser(id);
+        return userDAO.deleteUser(getUserByIdOrThrow(id));
+    }
+
+    private User getUserByIdOrThrow(Long id) {
+        Optional<User> user = userDAO.findUserById(id);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new UserNotFoundException("User with id \'" + id + "\' does not exist.");
+        }
     }
 
     public void deleteUsersBatch(List<Long> ids) {

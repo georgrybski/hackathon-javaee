@@ -46,16 +46,9 @@ public class UserDAO extends GenericDAO<User, Long> {
                 .setParameter("email", email).getSingleResult());
     }
 
-    public boolean deleteUser(Long id) {
-        boolean success;
-        try {
-            delete(id);
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            success = false;
-        }
-        return success;
+    public boolean deleteUser(User user) {
+        delete(user.getId());
+        return true;
     }
 
     @Transactional
