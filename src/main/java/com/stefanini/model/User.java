@@ -1,8 +1,8 @@
 package com.stefanini.model;
 
 import com.stefanini.dto.UserCreationDTO;
-import com.stefanini.utils.PasswordUtils;
 
+import com.stefanini.security.PasswordUtils;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;

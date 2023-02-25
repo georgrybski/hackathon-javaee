@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,16 +32,6 @@ public class UserResource {
     }
 
     @GET
-    public Response getListOfUsersThatStartWithLetter(@QueryParam("firstLetter") String letter) {
-        List<UserRetrievalDTO> users = userService.findUserByNameStartingWith(letter);
-        return Response.status(Response.Status.OK).entity(users).build();
-    }
-    @GET
-    public Response getListOfUsersBornInMonth(@QueryParam("month") Integer month) {
-        List<UserRetrievalDTO> users = userService.findUsersByBirthMonth(month);
-        return Response.status(Response.Status.OK).entity(users).build();
-    }
-    @GET
     @Path("/email-providers")
     public Response getEmailProviderList() {
         List<String> emailProviders = userService.getEmailProviders();
@@ -52,14 +41,8 @@ public class UserResource {
     @GET
     @Path("/{id}")
     public Response getUserById(@PathParam("id") Long id) {
-        Optional<UserRetrievalDTO> user = userService.findUserById(id);
-        Response response;
-        if (user.isPresent()) {
-            response = Response.status(Response.Status.OK).entity(user.get()).build();
-        } else {
-            response = Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return response;
+        return Response.status(Response.Status.OK).entity(userService.findUserById(id)).build();
+
     }
 
     @GET
@@ -70,13 +53,9 @@ public class UserResource {
 
     @POST
     public Response createUser(@Valid UserCreationDTO userCreationDTO) {
-        Response response;
-        if (userService.createUser(userCreationDTO)) {
-            response = Response.status(Response.Status.CREATED).build();
-        } else {
-            response = Response.status(Response.Status.CONFLICT).build();
-        }
-        return response;
+        userService.createUser(userCreationDTO);
+        return Response.status(Response.Status.CREATED).build();
+
     }
 
     @POST
@@ -95,37 +74,22 @@ public class UserResource {
 
     @PUT
     @Path("/{id}")
-    public Response updateUser(@PathParam("id") Long id, UserCreationDTO userCreationDTO) {
-        Response response;
-        if (userService.updateUser(id, userCreationDTO)) {
-            response = Response.status(Response.Status.OK).build();
-        } else {
-            response = Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        return response;
+    public Response updateUser(@PathParam("id") Long id, @Valid UserCreationDTO userCreationDTO) {
+        userService.updateUser(id, userCreationDTO);
+        return Response.status(Response.Status.OK).build();
     }
 
     @PATCH
     @Path("/{id}")
     public Response patchUser(@PathParam("id") Long id, Map<String, Object> patchData) {
-        Response response;
-        if (userService.patchUser(id, patchData)) {
-            response = Response.status(Response.Status.OK).build();
-        } else {
-            response = Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        return response;
+        userService.patchUser(id, patchData);
+        return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response deleteUser(@PathParam("id") Long id) {
-        Response response;
-        if (userService.deleteUser(id)) {
-            response = Response.status(Response.Status.NO_CONTENT).build();
-        } else {
-            response = Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return response;
+        userService.deleteUser(id);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 }
