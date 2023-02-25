@@ -17,6 +17,19 @@ import java.util.Optional;
 public class UserResource {
     @Inject
     private UserService userService;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsersList(@QueryParam("id") Long id,
+                                 @QueryParam("name") String name,
+                                 @QueryParam("login") String login,
+                                 @QueryParam("email") String email,
+                                 @QueryParam("birthMonth") Integer month,
+                                 @QueryParam("emailProvider") String emailProvider) {
+
+        return Response.status(Response.Status.OK).entity(userService.listUsers(id, name, login, email, month, emailProvider)).build();
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getListOfUsersThatStartWithLetter(@QueryParam("firstLetter") String letter) {
@@ -35,12 +48,6 @@ public class UserResource {
     public Response getEmailProviderList() {
         List<String> emailProviders = userService.getEmailProviders();
         return Response.status(Response.Status.OK).entity(emailProviders).build();
-    }
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersList() {
-        List<UserRetrievalDTO> users = userService.listUsers();
-        return Response.status(Response.Status.OK).entity(users).build();
     }
 
     @GET

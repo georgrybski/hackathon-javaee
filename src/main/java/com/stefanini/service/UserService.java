@@ -18,8 +18,14 @@ public class UserService {
     @Inject
     private UserDAO userDAO;
 
-    public List<UserRetrievalDTO> listUsers() {
-        return userDAO.listAll().stream()
+//    public List<UserRetrievalDTO> listUsers() {
+//        return userDAO.listAll().stream()
+//                .map(UserRetrievalDTO::new)
+//                .collect(Collectors.toList());
+//    }
+
+    public List<UserRetrievalDTO> listUsers(Long id, String name, String login, String email, Integer month, String emailProvider) {
+        return userDAO.getUsers(id, name, login, email, month, emailProvider).stream()
                 .map(UserRetrievalDTO::new)
                 .collect(Collectors.toList());
     }
