@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
@@ -117,5 +119,78 @@ public class UserDAO extends GenericDAO<User, Long> {
         return createQuery("SELECT u FROM User u WHERE u.email LIKE :string")
                 .setParameter("string", "%" + string + "%")
                 .getResultList();
+    }
+
+    public List<User> getUsers(Long id, String name, String login, String email, Integer month, String emailProvider) {
+        StringBuilder query = new StringBuilder("SELECT u FROM User u WHERE 1 = 1");
+
+        if (id != null) {
+            query.append(" AND u.id = :id");
+        }
+
+        if (name != null) {
+            query.append(" AND u.name LIKE :name");
+        }
+
+        if (login != null) {
+            query.append(" AND u.login LIKE :login");
+        }
+
+        if (email != null) {
+            query.append(" AND u.email LIKE :email");
+        }
+
+        if (emailProvider != null) {
+            query.append(" AND SUBSTRING(u.email, LOCATE('@', u.email) + 1) = :emailProvider");
+        }
+
+        if (month != null) {
+            query.append(" AND MONTH(u.birthDate) = :month");
+        }
+
+        TypedQuery<User> typedQuery = createQuery(query.toString());
+
+        if (id != null) {
+            typedQuery.setParameter("id", id);
+        }
+
+        if (name != null) {
+            typedQuery.setParameter("name", "%" + name + "%");
+        }
+
+        if (login != null) {
+            typedQuery.setParameter("login", "%" + login + "%");
+        }
+
+        if (email != null) {
+            typedQuery.setParameter("email", "%" + email + "%");
+        }
+
+        if (emailProvider != null) {
+            typedQuery.setParameter("emailProvider", emailProvider);
+        }
+
+        if (month != null) {
+            typedQuery.setParameter("month", month);
+        }
+
+        return typedQuery.getResultList();
+    }
+
+    @Transactional
+    public void deleteUsersBatch(List<Long> ids) {
+        StringBuilder queryBuilder = new StringBuilder("DELETE FROM USUARIO WHERE id IN (");
+        for (int i = 0; i < ids.size(); i++) {
+            if (i > 0) {
+                queryBuilder.append(",");
+            }
+            queryBuilder.append("?");
+        }
+        queryBuilder.append(")");
+        Query query = em.createNativeQuery(queryBuilder.toString());
+        for (int i = 0; i < ids.size(); i++) {
+            query.setParameter(i + 1, ids.get(i));
+        }
+        query.executeUpdate();
     }
 }

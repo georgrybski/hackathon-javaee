@@ -19,9 +19,23 @@ public class UserResource {
     @Inject
     private UserService userService;
     @GET
-    public Response getUsersList() {
-        return Response.status(Response.Status.OK).entity(userService.listUsers()).build();
+    public Response getUsersList(@QueryParam("id") Long id,
+                                 @QueryParam("name") String name,
+                                 @QueryParam("login") String login,
+                                 @QueryParam("email") String email,
+                                 @QueryParam("birthMonth") Integer month,
+                                 @QueryParam("emailProvider") String emailProvider) {
+
+        return Response.status(Response.Status.OK).entity(userService.listUsers(id, name, login, email, month, emailProvider)).build();
     }
+
+    @POST
+    @Path("/batch/delete")
+    public Response deleteUsersBatch(List<Long> ids) {
+        userService.deleteUsersBatch(ids);
+        return Response.status(Response.Status.OK).build();
+    }
+
     @GET
     @Path("/name-starting-with/")
     public Response getListOfUsersThatStartWithLetter(@QueryParam("letter") String letter) {

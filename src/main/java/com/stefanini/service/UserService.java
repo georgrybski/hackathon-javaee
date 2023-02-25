@@ -57,6 +57,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserRetrievalDTO> listUsers(Long id, String name, String login, String email, Integer month, String emailProvider) {
+        return userDAO.getUsers(id, name, login, email, month, emailProvider).stream()
+                .map(UserRetrievalDTO::new)
+                .collect(Collectors.toList());
+    }
+
     public List<String> getEmailProviders() {
         return userDAO.findAllEmailProviders();
     }
@@ -129,5 +135,9 @@ public class UserService {
         return userDAO.findUserByEmailContaining(string).stream()
                 .map(UserRetrievalDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteUsersBatch(List<Long> ids) {
+        userDAO.deleteUsersBatch(ids);
     }
 }
