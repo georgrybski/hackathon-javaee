@@ -1,5 +1,6 @@
 package com.stefanini.resources;
 
+import com.stefanini.dto.LoginRequest;
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.dto.UserRetrievalDTO;
 import com.stefanini.service.UserService;
@@ -83,6 +84,13 @@ public class UserResource {
     public Response deleteUsersBatch(List<Long> ids) {
         userService.deleteUsersBatch(ids);
         return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @Path("/login")
+    public Response login(@Valid LoginRequest loginRequest) {
+        return userService.validateLoginRequest(loginRequest) ? Response.status(Response.Status.OK).build() : Response.status(Response.Status.UNAUTHORIZED).build();
+
     }
 
     @PUT
