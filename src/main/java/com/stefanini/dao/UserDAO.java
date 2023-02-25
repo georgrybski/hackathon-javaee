@@ -48,10 +48,9 @@ public class UserDAO extends GenericDAO<User, Long> {
         return user;
     }
 
-    public User findUserByEmail(String email) {
-        return createQuery("SELECT u FROM User u WHERE u.email = :email")
-                .setParameter("email", email)
-                .getSingleResult();
+    public Optional<User> findUserByEmail(String email) {
+        return Optional.ofNullable(createQuery("SELECT u FROM User u WHERE u.email = :email")
+                .setParameter("email", email).getSingleResult());
     }
 
     public boolean deleteUser(Long id) {
