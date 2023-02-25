@@ -100,4 +100,22 @@ public class UserDAO extends GenericDAO<User, Long> {
                 .setParameter("login", login)
                 .getResultList().stream().findFirst();
     }
+
+    public List<User> findUserByLoginContaining(String login) {
+        return createQuery("SELECT u FROM User u WHERE u.login LIKE :login")
+                .setParameter("login", "%" + login + "%")
+                .getResultList();
+    }
+
+    public List<User> findUserByNameContaining(String string) {
+        return createQuery("SELECT u FROM User u WHERE u.name LIKE :string")
+                .setParameter("string", "%" + string + "%")
+                .getResultList();
+    }
+
+    public List<User> findUserByEmailContaining(String string) {
+        return createQuery("SELECT u FROM User u WHERE u.email LIKE :string")
+                .setParameter("string", "%" + string + "%")
+                .getResultList();
+    }
 }

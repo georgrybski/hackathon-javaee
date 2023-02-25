@@ -9,6 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 @Entity
 @Data
@@ -60,7 +62,7 @@ public class User {
         this.password = PasswordUtils.hashPassword(userCreationDTO.getPassword(), this.salt);
         this.email = userCreationDTO.getEmail();
         this.birthDate = userCreationDTO.getBirthDate();
-        this.creationTime = LocalDateTime.now();
+        this.creationTime = LocalDateTime.now(ZoneOffset.UTC);
     }
 
     public User() {}

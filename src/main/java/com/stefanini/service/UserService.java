@@ -112,4 +112,22 @@ public class UserService {
             throw new UserNotFoundException("User with email \'" + email + "\' does not exist.");
         }
     }
+
+    public List<UserRetrievalDTO> findUserByLoginContaining(String login) {
+        return userDAO.findUserByLoginContaining(login).stream()
+                .map(UserRetrievalDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserRetrievalDTO> findUserByNameContaining(String string) {
+        return userDAO.findUserByNameContaining(string).stream()
+                .map(UserRetrievalDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserRetrievalDTO> findUserByEmailContaining(String string) {
+        return userDAO.findUserByEmailContaining(string).stream()
+                .map(UserRetrievalDTO::new)
+                .collect(Collectors.toList());
+    }
 }

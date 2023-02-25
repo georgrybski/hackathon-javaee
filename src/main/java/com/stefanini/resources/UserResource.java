@@ -28,6 +28,28 @@ public class UserResource {
         List<UserRetrievalDTO> users = userService.findUserByNameStartingWith(letter);
         return Response.status(Response.Status.OK).entity(users).build();
     }
+
+    @GET
+    @Path("/login-contains/")
+    public Response getListOfUsersThatLoginContains(@QueryParam("string") String string) {
+        List<UserRetrievalDTO> users = userService.findUserByLoginContaining(string);
+        return Response.status(Response.Status.OK).entity(users).build();
+    }
+
+    @GET
+    @Path("/name-contains/")
+    public Response getListOfUsersThatNameContains(@QueryParam("string") String string) {
+        List<UserRetrievalDTO> users = userService.findUserByNameContaining(string);
+        return Response.status(Response.Status.OK).entity(users).build();
+    }
+
+    @GET
+    @Path("/email-contains/")
+    public Response getListOfUsersThatEmailContains(@QueryParam("string") String string) {
+        List<UserRetrievalDTO> users = userService.findUserByEmailContaining(string);
+        return Response.status(Response.Status.OK).entity(users).build();
+    }
+
     @GET
     @Path("/born-in/")
     public Response getListOfUsersBornInMonth(@QueryParam("month") Integer month) {
