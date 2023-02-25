@@ -14,12 +14,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @Path("/users")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
     @Inject
     private UserService userService;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getUsersList(@QueryParam("id") Long id,
                                  @QueryParam("name") String name,
                                  @QueryParam("login") String login,
@@ -31,20 +32,17 @@ public class UserResource {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getListOfUsersThatStartWithLetter(@QueryParam("firstLetter") String letter) {
         List<UserRetrievalDTO> users = userService.findUserByNameStartingWith(letter);
         return Response.status(Response.Status.OK).entity(users).build();
     }
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getListOfUsersBornInMonth(@QueryParam("month") Integer month) {
         List<UserRetrievalDTO> users = userService.findUsersByBirthMonth(month);
         return Response.status(Response.Status.OK).entity(users).build();
     }
     @GET
     @Path("/email-providers")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getEmailProviderList() {
         List<String> emailProviders = userService.getEmailProviders();
         return Response.status(Response.Status.OK).entity(emailProviders).build();
@@ -52,7 +50,6 @@ public class UserResource {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("id") Long id) {
         Optional<UserRetrievalDTO> user = userService.findUserById(id);
         Response response;
@@ -66,14 +63,11 @@ public class UserResource {
 
     @GET
     @Path("/dto-example")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getExampleDTO() {
         return Response.status(Response.Status.OK).entity(UserCreationDTO.userCreationDTOExample).build();
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(@Valid UserCreationDTO userCreationDTO) {
         Response response;
         if (userService.createUser(userCreationDTO)) {
@@ -86,8 +80,6 @@ public class UserResource {
 
     @PUT
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(@PathParam("id") Long id, UserCreationDTO userCreationDTO) {
         Response response;
         if (userService.updateUser(id, userCreationDTO)) {
@@ -100,8 +92,6 @@ public class UserResource {
 
     @PATCH
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response patchUser(@PathParam("id") Long id, Map<String, Object> patchData) {
         Response response;
         if (userService.patchUser(id, patchData)) {
@@ -114,7 +104,6 @@ public class UserResource {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("id") Long id) {
         Response response;
         if (userService.deleteUser(id)) {
