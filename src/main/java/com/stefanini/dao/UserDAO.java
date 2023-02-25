@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.security.InvalidParameterException;
@@ -63,6 +64,23 @@ public class UserDAO extends GenericDAO<User, Long> {
             success = false;
         }
         return success;
+    }
+
+    @Transactional
+    public void deleteUsersBatch(List<Long> ids) {
+        StringBuilder queryBuilder = new StringBuilder("DELETE FROM USUARIO WHERE id IN (");
+        for (int i = 0; i < ids.size(); i++) {
+            if (i > 0) {
+                queryBuilder.append(",");
+            }
+            queryBuilder.append("?");
+        }
+        queryBuilder.append(")");
+        Query query = em.createNativeQuery(queryBuilder.toString());
+        for (int i = 0; i < ids.size(); i++) {
+            query.setParameter(i + 1, ids.get(i));
+        }
+        query.executeUpdate();
     }
 
     public boolean createUser(UserCreationDTO userCreationDTO) {

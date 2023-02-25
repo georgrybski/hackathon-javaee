@@ -58,6 +58,10 @@ public class UserService {
         return userDAO.deleteUser(id);
     }
 
+    public void deleteUsersBatch(List<Long> ids) {
+        userDAO.deleteUsersBatch(ids);
+    }
+
     public boolean patchUser(Long id, Map<String, Object> patchData) {
         return userDAO.patchUser(id, patchData);
     }

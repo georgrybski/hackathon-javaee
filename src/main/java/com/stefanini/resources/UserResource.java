@@ -78,6 +78,13 @@ public class UserResource {
         return response;
     }
 
+    @POST
+    @Path("/batch/delete")
+    public Response deleteUsersBatch(List<Long> ids) {
+        userService.deleteUsersBatch(ids);
+        return Response.status(Response.Status.OK).build();
+    }
+
     @PUT
     @Path("/{id}")
     public Response updateUser(@PathParam("id") Long id, UserCreationDTO userCreationDTO) {
