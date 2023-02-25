@@ -26,12 +26,6 @@ public class UserService {
     @Inject
     private EmailValidator emailValidator;
 
-//    public List<UserRetrievalDTO> listUsers() {
-//        return userDAO.listAll().stream()
-//                .map(UserRetrievalDTO::new)
-//                .collect(Collectors.toList());
-//    }
-
     public List<UserRetrievalDTO> listUsers(Long id, String name, String login, String email, Integer month, String emailProvider) {
         return userDAO.getUsers(id, name, login, email, month, emailProvider).stream()
                 .map(UserRetrievalDTO::new)
@@ -77,7 +71,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new UserNotFoundException("User with id \'" + id + "\' does not exist.");
+            throw new UserNotFoundException("User with id '" + id + "' does not exist.");
         }
     }
 
@@ -86,7 +80,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new UserNotFoundException("User with email \'" + email + "\' does not exist.");
+            throw new UserNotFoundException("User with email '" + email + "' does not exist.");
         }
     }
 
@@ -95,7 +89,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new UserNotFoundException("User with login \'" + login + "\' does not exist.");
+            throw new UserNotFoundException("User with login '" + login + "' does not exist.");
         }
     }
 
@@ -104,7 +98,7 @@ public class UserService {
     }
 
     public boolean patchUser(Long id, Map<String, Object> patchData) {
-        return userDAO.patchUser(id, patchData);
+        return userDAO.patchUser(getUserByIdOrThrow(id), patchData);
     }
 
     public boolean updateUser(Long id, UserCreationDTO userCreationDTO) {

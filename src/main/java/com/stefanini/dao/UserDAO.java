@@ -19,8 +19,6 @@ import java.util.Optional;
 @ApplicationScoped
 public class UserDAO extends GenericDAO<User, Long> {
 
-    Logger logger = LoggerFactory.getLogger(UserDAO.class);
-
     public List<User> findUsersByBirthMonth(Integer requestedMonth) {
         int month = (requestedMonth == null) ? LocalDate.now().getMonthValue() : requestedMonth;
         return createQuery("SELECT u FROM User u WHERE MONTH(u.birthDate) = :currentMonth")
@@ -75,66 +73,44 @@ public class UserDAO extends GenericDAO<User, Long> {
     }
 
     public boolean createUser(UserCreationDTO userCreationDTO) {
-        boolean success;
-        try {
-            save(new User(userCreationDTO));
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            success = false;
-        }
-        return success;
+        save(new User(userCreationDTO));
+        return true;
     }
 
     @Transactional
     public boolean updateUser(Long id, UserCreationDTO userCreationDTO) {
-        boolean success;
         User user = new User(userCreationDTO);
         user.setId(id);
-        try {
-            update(user);
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            success = false;
-        }
-        return success;
+        update(user);
+        return true;
     }
 
     @Transactional
-    public boolean patchUser(Long id, Map<String, Object> patchData) {
-        boolean success;
-        try {
-            User user = findById(id);
-            patchData.forEach((key, value) -> {
-                switch (key) {
-                    case "name":
-                        user.setName((String) value);
-                        break;
-                    case "login":
-                        user.setLogin((String) value);
-                        break;
-                    case "password":
-                        user.setSalt(PasswordUtils.generateSalt());
-                        user.setPassword(PasswordUtils.hashPassword((String) value, user.getSalt()));
-                        break;
-                    case "email":
-                        user.setEmail((String) value);
-                        break;
-                    case "birthDate":
-                        user.setBirthDate(LocalDate.parse((String) value));
-                        break;
-                    default:
-                        throw new InvalidParameterException();
-                }
-            });
-            em.merge(user);
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            success = false;
-        }
-        return success;
+    public boolean patchUser(User user, Map<String, Object> patchData) {
+        patchData.forEach((key, value) -> {
+            switch (key) {
+                case "name":
+                    user.setName((String) value);
+                    break;
+                case "login":
+                    user.setLogin((String) value);
+                    break;
+                case "password":
+                    user.setSalt(PasswordUtils.generateSalt());
+                    user.setPassword(PasswordUtils.hashPassword((String) value, user.getSalt()));
+                    break;
+                case "email":
+                    user.setEmail((String) value);
+                    break;
+                case "birthDate":
+                    user.setBirthDate(LocalDate.parse((String) value));
+                    break;
+                default:
+                    throw new InvalidParameterException("Invalid parameter: " + key);
+            }
+        });
+        em.merge(user);
+        return true;
     }
 
     public List<User> getUsers(Long id, String name, String login, String email, Integer month, String emailProvider) {
