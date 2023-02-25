@@ -2,7 +2,7 @@ package com.stefanini.dao;
 
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.model.User;
-import com.stefanini.utils.PasswordUtils;
+import com.stefanini.security.PasswordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +44,12 @@ public class UserDAO extends GenericDAO<User, Long> {
     public Optional<User> findUserByEmail(String email) {
         return Optional.ofNullable(createQuery("SELECT u FROM User u WHERE u.email = :email")
                 .setParameter("email", email).getSingleResult());
+    }
+
+    public Optional<User> findUserByLogin(String login) {
+        return createQuery("SELECT u FROM User u WHERE u.login = :login")
+                .setParameter("login", login)
+                .getResultList().stream().findFirst();
     }
 
     public boolean deleteUser(User user) {

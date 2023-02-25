@@ -1,10 +1,13 @@
 package com.stefanini.service;
 
 import com.stefanini.dao.UserDAO;
+import com.stefanini.dto.LoginRequest;
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.dto.UserRetrievalDTO;
 import com.stefanini.exception.UserNotFoundException;
 import com.stefanini.model.User;
+import com.stefanini.security.LoginValidator;
+import com.stefanini.utils.EmailValidator;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,6 +21,10 @@ public class UserService {
 
     @Inject
     private UserDAO userDAO;
+    @Inject
+    private LoginValidator loginValidator;
+    @Inject
+    private EmailValidator emailValidator;
 
 //    public List<UserRetrievalDTO> listUsers() {
 //        return userDAO.listAll().stream()
@@ -43,6 +50,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public boolean validateLoginRequest(LoginRequest loginRequest) {
+        boolean isEmail = emailValidator.isEmail(loginRequest.getLogin());
+        User user = isEmail ? getUserByEmailOrThrow(loginRequest.getLogin()) : getUserByLoginOrThrow(loginRequest.getLogin());
+        return loginValidator.validateLogin(user, loginRequest.getPassword());
+    }
+
     public List<String> getEmailProviders() {
         return userDAO.findAllEmailProviders();
     }
@@ -65,6 +78,24 @@ public class UserService {
             return user.get();
         } else {
             throw new UserNotFoundException("User with id \'" + id + "\' does not exist.");
+        }
+    }
+
+    private User getUserByEmailOrThrow(String email) {
+        Optional<User> user = userDAO.findUserByEmail(email);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new UserNotFoundException("User with email \'" + email + "\' does not exist.");
+        }
+    }
+
+    private User getUserByLoginOrThrow(String login) {
+        Optional<User> user = userDAO.findUserByLogin(login);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new UserNotFoundException("User with login \'" + login + "\' does not exist.");
         }
     }
 
