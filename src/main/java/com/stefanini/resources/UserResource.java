@@ -1,5 +1,6 @@
 package com.stefanini.resources;
 
+import com.stefanini.dto.LoginRequest;
 import com.stefanini.dto.UserCreationDTO;
 import com.stefanini.dto.UserRetrievalDTO;
 import com.stefanini.service.UserService;
@@ -11,110 +12,84 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Path("/users")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
     @Inject
     private UserService userService;
+
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getListOfUsersThatStartWithLetter(@QueryParam("firstLetter") String letter) {
-        List<UserRetrievalDTO> users = userService.findUserByNameStartingWith(letter);
-        return Response.status(Response.Status.OK).entity(users).build();
+    public Response getUsersList(@QueryParam("id") Long id,
+                                 @QueryParam("name") String name,
+                                 @QueryParam("login") String login,
+                                 @QueryParam("email") String email,
+                                 @QueryParam("birthMonth") Integer month,
+                                 @QueryParam("emailProvider") String emailProvider) {
+
+        return Response.status(Response.Status.OK).entity(userService.listUsers(id, name, login, email, month, emailProvider)).build();
     }
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getListOfUsersBornInMonth(@QueryParam("month") Integer month) {
-        List<UserRetrievalDTO> users = userService.findUsersByBirthMonth(month);
-        return Response.status(Response.Status.OK).entity(users).build();
-    }
+
     @GET
     @Path("/email-providers")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getEmailProviderList() {
         List<String> emailProviders = userService.getEmailProviders();
         return Response.status(Response.Status.OK).entity(emailProviders).build();
     }
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersList() {
-        List<UserRetrievalDTO> users = userService.listUsers();
-        return Response.status(Response.Status.OK).entity(users).build();
-    }
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("id") Long id) {
-        Optional<UserRetrievalDTO> user = userService.findUserById(id);
-        Response response;
-        if (user.isPresent()) {
-            response = Response.status(Response.Status.OK).entity(user.get()).build();
-        } else {
-            response = Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return response;
+        return Response.status(Response.Status.OK).entity(userService.findUserById(id)).build();
+
     }
 
     @GET
     @Path("/dto-example")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getExampleDTO() {
         return Response.status(Response.Status.OK).entity(UserCreationDTO.userCreationDTOExample).build();
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(@Valid UserCreationDTO userCreationDTO) {
-        Response response;
-        if (userService.createUser(userCreationDTO)) {
-            response = Response.status(Response.Status.CREATED).build();
-        } else {
-            response = Response.status(Response.Status.CONFLICT).build();
-        }
-        return response;
+        userService.createUser(userCreationDTO);
+        return Response.status(Response.Status.CREATED).build();
+
+    }
+
+    @POST
+    @Path("/batch/delete")
+    public Response deleteUsersBatch(List<Long> ids) {
+        userService.deleteUsersBatch(ids);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @Path("/login")
+    public Response login(@Valid LoginRequest loginRequest) {
+        return userService.validateLoginRequest(loginRequest) ? Response.status(Response.Status.OK).build() : Response.status(Response.Status.UNAUTHORIZED).build();
+
     }
 
     @PUT
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUser(@PathParam("id") Long id, UserCreationDTO userCreationDTO) {
-        Response response;
-        if (userService.updateUser(id, userCreationDTO)) {
-            response = Response.status(Response.Status.OK).build();
-        } else {
-            response = Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        return response;
+    public Response updateUser(@PathParam("id") Long id, @Valid UserCreationDTO userCreationDTO) {
+        userService.updateUser(id, userCreationDTO);
+        return Response.status(Response.Status.OK).build();
     }
 
     @PATCH
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response patchUser(@PathParam("id") Long id, Map<String, Object> patchData) {
-        Response response;
-        if (userService.patchUser(id, patchData)) {
-            response = Response.status(Response.Status.OK).build();
-        } else {
-            response = Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        return response;
+        userService.patchUser(id, patchData);
+        return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("id") Long id) {
-        Response response;
-        if (userService.deleteUser(id)) {
-            response = Response.status(Response.Status.NO_CONTENT).build();
-        } else {
-            response = Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return response;
+        userService.deleteUser(id);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

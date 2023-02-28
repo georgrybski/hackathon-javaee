@@ -1,8 +1,8 @@
 package com.stefanini.model;
 
 import com.stefanini.dto.UserCreationDTO;
-import com.stefanini.utils.PasswordUtils;
 
+import com.stefanini.security.PasswordUtils;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "USUARIO")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -26,7 +27,7 @@ public class User {
 
     @NotEmpty
     @Size(min = 5, max = 20)
-    @Column(name = "LOGIN", unique = true)
+    @Column(name = "LOGIN", unique = true, nullable = false)
     private String login;
 
     @NotEmpty
