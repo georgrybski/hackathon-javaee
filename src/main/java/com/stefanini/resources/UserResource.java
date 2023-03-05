@@ -2,7 +2,6 @@ package com.stefanini.resources;
 
 import com.stefanini.dto.LoginRequest;
 import com.stefanini.dto.UserCreationDTO;
-import com.stefanini.dto.UserRetrievalDTO;
 import com.stefanini.service.UserService;
 
 import javax.inject.Inject;
@@ -30,6 +29,13 @@ public class UserResource {
 
         return Response.status(Response.Status.OK).entity(userService.listUsers(id, name, login, email, month, emailProvider)).build();
     }
+
+    @GET
+    @Path("/login-available")
+    public Response isLoginAvailable(@QueryParam("login") String login) {
+        return Response.status(Response.Status.OK).entity(userService.isLoginAvailable(login)).build();
+    }
+
 
     @GET
     @Path("/email-providers")

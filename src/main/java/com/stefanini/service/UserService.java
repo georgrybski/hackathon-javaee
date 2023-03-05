@@ -104,4 +104,9 @@ public class UserService {
     public boolean updateUser(Long id, UserCreationDTO userCreationDTO) {
         return userDAO.updateUser(id, userCreationDTO);
     }
+
+    //  Method to check if a certain login is availiable (isLoginAvailable)
+    public boolean isLoginAvailable(String login) {
+        return userDAO.findUserByLogin(login).isEmpty();
+    }
 }
